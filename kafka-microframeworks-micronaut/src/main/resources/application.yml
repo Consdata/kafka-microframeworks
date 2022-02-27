@@ -1,0 +1,7 @@
+micronaut:
+  application:
+    name: kafka-microframeworks-micronaut
+netty:
+  default:
+    allocator:
+      max-order: 3

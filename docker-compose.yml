@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   zookeeper:
     image: wurstmeister/zookeeper
@@ -20,3 +20,7 @@ services:
       - 8080:8080
     environment:
       bootstrapServers: "kafka:9092"
+  micronaut:
+    build:
+      context: ./kafka-microframeworks-micronaut
+    image: consdata/kafka-microframeworks-micronaut
