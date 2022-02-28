@@ -24,3 +24,24 @@ services:
     build:
       context: ./kafka-microframeworks-micronaut
     image: consdata/kafka-microframeworks-micronaut
+    container_name: micronaut
+  springboot:
+    build:
+      context: ./kafka-microframeworks-spring-boot
+    image: consdata/kafka-microframeworks-spring-boot
+    container_name: spring-boot
+  netdata:
+    image: netdata/netdata
+    ports:
+      - 19999:19999
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/os-release:/host/etc/os-release:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
