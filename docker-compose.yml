@@ -9,15 +9,15 @@ services:
     ports:
       - "9092:9092"
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: 192.168.1.64
+      KAFKA_ADVERTISED_HOST_NAME: 192.168.1.78
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: "spring-boot:16:1,micronaut:16:1"
+      KAFKA_CREATE_TOPICS: "spring-boot-sell-orders:4:1,spring-boot-buy-orders:4:1,spring-boot-transactions:4:1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
   kouncil:
     image: consdata/kouncil
     ports:
-      - 8080:8080
+      - "8080:8080"
     environment:
       bootstrapServers: "kafka:9092"
   micronaut:
@@ -25,15 +25,19 @@ services:
       context: ./kafka-microframeworks-micronaut
     image: consdata/kafka-microframeworks-micronaut
     container_name: micronaut
+    ports:
+      - "8082:8082"
   springboot:
     build:
       context: ./kafka-microframeworks-spring-boot
     image: consdata/kafka-microframeworks-spring-boot
     container_name: spring-boot
+    ports:
+      - "8081:8081"
   netdata:
     image: netdata/netdata
     ports:
-      - 19999:19999
+      - "19999:19999"
     cap_add:
       - SYS_PTRACE
     security_opt:

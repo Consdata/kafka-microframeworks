@@ -1,6 +1,8 @@
 micronaut:
   application:
     name: kafka-microframeworks-micronaut
+  server:
+    port: 8082
 netty:
   default:
     allocator:
