@@ -1,5 +1,6 @@
 package com.consdata.kafka.microframeworks.springboot.order;
 
+import com.consdata.kafka.microframeworks.springboot.wallet.Stock;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,16 +15,22 @@ import java.security.SecureRandom;
 @Builder
 public class Order {
 
-    private String orderId;
+    private int customerId;
 
-    private int productId;
+    private String stockSymbol;
+
+    private int amount;
+
+    // Integer for simplicity's sake
+    private int desiredPricePerStock;
 
     private OrderType orderType;
 
-    // Integer for simplicity’s sake
-    private int desiredPrice;
+    private static final SecureRandom RANDOM = new SecureRandom();
 
-    private static final SecureRandom random = new SecureRandom();
+    public String getKey() {
+        return stockSymbol;
+    }
 
     public static Order sell() {
         return Order.generate(OrderType.SELL);
@@ -34,12 +41,14 @@ public class Order {
     }
 
     private static Order generate(OrderType orderType) {
+        Stock stock = Stock.getRandomStockOption();
         return Order
                 .builder()
-                .orderId(RandomStringUtils.randomAlphanumeric(4))
-                .productId(random.nextInt(0, 10))
+                .customerId(RANDOM.nextInt(0, 100))
+                .stockSymbol(stock.getSymbol())
+                .amount(RANDOM.nextInt(10, 100))
+                .desiredPricePerStock(RANDOM.nextInt(stock.getMinPrice(), stock.getMaxPrice()))
                 .orderType(orderType)
-                .desiredPrice(random.nextInt(1, 100))
                 .build();
     }
 }

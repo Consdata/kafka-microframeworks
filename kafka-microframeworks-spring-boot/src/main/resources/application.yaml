@@ -3,6 +3,19 @@ server:
 spring:
   kafka:
     producer:
-      bootstrap-servers: kafka:9092
+      bootstrap-servers: localhost:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  cloud:
+    stream:
+      kafka:
+        streams:
+          binder:
+            functions:
+              merge:
+                applicationId: spring-boot-kafka
+      bindings:
+        merge-in-0:
+          destination: spring-boot-sell-orders
+        merge-in-1:
+          destination: spring-boot-buy-orders

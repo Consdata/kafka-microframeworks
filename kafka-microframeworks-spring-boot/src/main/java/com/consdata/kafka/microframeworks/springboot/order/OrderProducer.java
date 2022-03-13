@@ -17,10 +17,10 @@ public class OrderProducer {
     }
 
     public void produceSell(Order order) {
-        kafkaTemplate.send(SELL_ORDER_TOPIC, order.getOrderId(), order);
+        kafkaTemplate.send(SELL_ORDER_TOPIC, order.getKey(), order);
     }
 
     public void produceBuy(Order order) {
-        kafkaTemplate.send(BUY_ORDER_TOPIC, order.getOrderId(), order);
+        kafkaTemplate.send(BUY_ORDER_TOPIC, order.getKey(), order);
     }
 }
