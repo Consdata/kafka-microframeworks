@@ -1,42 +1,60 @@
 package com.consdata.kafka.microframeworks.springboot.wallet;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.security.SecureRandom;
-import java.util.List;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class Stock {
+public enum Stock {
 
-    private String symbol;
+    MICROSOFT("MSFT", 10, 100),
 
-    private int minPrice;
+    APPLE("APPL", 10, 100),
 
-    private int maxPrice;
+    GOOGLE("GOOGL", 10, 100),
+
+    AMAZON("AMZN", 10, 100),
+
+    TESLA("TSLA", 10, 100),
+
+    NVIDIA("NVDA", 10, 100),
+
+    TSMC("TSM", 10, 100),
+
+    FACEBOOK("FB", 10, 100),
+
+    CISCO("CSCO", 10, 100),
+
+    ORACLE("ORCL", 10, 100),
+
+    INTEL("INTC", 10, 100);
+
+    Stock(String symbol, int minPrice, int maxPrice) {
+        this.symbol = symbol;
+        this.minPrice = minPrice;
+        this.maxPrice = maxPrice;
+    }
+
+    private final String symbol;
+
+    private final int minPrice;
+
+    private final int maxPrice;
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    public static final List<Stock> STOCKS = List.of(
-            Stock.builder().symbol("MSFT").minPrice(10).maxPrice(20).build(),
-            Stock.builder().symbol("AAPL").minPrice(50).maxPrice(63).build(),
-            Stock.builder().symbol("GOOGL").minPrice(10).maxPrice(20).build(),
-            Stock.builder().symbol("AMZN").minPrice(10).maxPrice(20).build(),
-            Stock.builder().symbol("TSLA").minPrice(10).maxPrice(20).build(),
-            Stock.builder().symbol("NVDA").minPrice(10).maxPrice(20).build(),
-            Stock.builder().symbol("TSM").minPrice(10).maxPrice(20).build(),
-            Stock.builder().symbol("FB").minPrice(10).maxPrice(20).build(),
-            Stock.builder().symbol("CSCO").minPrice(10).maxPrice(20).build(),
-            Stock.builder().symbol("ORCL").minPrice(10).maxPrice(20).build(),
-            Stock.builder().symbol("INTC").minPrice(10).maxPrice(20).build()
-    );
-
     public static Stock getRandomStockOption() {
-        return STOCKS.get(RANDOM.nextInt(STOCKS.size()));
+        return values()[RANDOM.nextInt(values().length)];
+    }
+
+    public String getSymbol() {
+        return symbol;
+    }
+
+    public int getMinPrice() {
+        return minPrice;
+    }
+
+    public int getMaxPrice() {
+        return maxPrice;
     }
 }

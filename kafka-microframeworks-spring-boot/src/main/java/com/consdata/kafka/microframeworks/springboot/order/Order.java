@@ -36,8 +36,16 @@ public class Order {
         return Order.generate(OrderType.SELL);
     }
 
+    public static Order testSell(int customerId, String stockSymbol) {
+        return Order.generateTest(OrderType.SELL, customerId, stockSymbol);
+    }
+
     public static Order buy() {
         return Order.generate(OrderType.BUY);
+    }
+
+    public static Order testBuy(int customerId, String stockSymbol) {
+        return Order.generateTest(OrderType.BUY, customerId, stockSymbol);
     }
 
     private static Order generate(OrderType orderType) {
@@ -48,6 +56,17 @@ public class Order {
                 .stockSymbol(stock.getSymbol())
                 .amount(RANDOM.nextInt(10, 100))
                 .desiredPricePerStock(RANDOM.nextInt(stock.getMinPrice(), stock.getMaxPrice()))
+                .orderType(orderType)
+                .build();
+    }
+
+    private static Order generateTest(OrderType orderType, int customerId, String stockSymbol) {
+        return Order
+                .builder()
+                .customerId(customerId)
+                .stockSymbol(stockSymbol)
+                .amount(10)
+                .desiredPricePerStock(10)
                 .orderType(orderType)
                 .build();
     }

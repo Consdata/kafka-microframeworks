@@ -23,6 +23,10 @@ public class CustomerWallet {
         IntStream.range(0, 100).forEach(i -> customerWalletMap.put(i, Wallet.generateRandomWallet()));
     }
 
+    public void initTestWallet() {
+        IntStream.range(0, 100).forEach(i -> customerWalletMap.put(i, Wallet.generateTestWallet()));
+    }
+
     public Transaction execute(Transaction transaction) {
         lockWalletsAndExecuteTransaction(transaction, this::executeTransaction);
         return transaction;
