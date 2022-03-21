@@ -32,6 +32,9 @@ public class Wallet {
                 .build();
     }
 
+    /**
+     * For testing purposes each client gets 1000 stocks of every company, and a 1 million in cash
+     */
     public static Wallet generateTestWallet() {
         Map<String, Integer> stocks = new HashMap<>();
         Arrays.stream(Stock.values()).forEach(s -> stocks.put(s.getSymbol(), 1000));

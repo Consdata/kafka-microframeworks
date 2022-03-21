@@ -8,9 +8,9 @@ public class OrderProducer {
 
     private final KafkaTemplate<String, Order> kafkaTemplate;
 
-    private static final String SELL_ORDER_TOPIC = "spring-boot-sell-orders";
+    public static final String SELL_ORDER_TOPIC = "spring-boot-sell-orders";
 
-    private static final String BUY_ORDER_TOPIC = "spring-boot-buy-orders";
+    public static final String BUY_ORDER_TOPIC = "spring-boot-buy-orders";
 
     public OrderProducer(KafkaTemplate<String, Order> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;

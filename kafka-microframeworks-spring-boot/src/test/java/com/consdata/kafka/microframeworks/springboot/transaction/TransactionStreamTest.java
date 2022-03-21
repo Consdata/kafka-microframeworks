@@ -2,14 +2,12 @@ package com.consdata.kafka.microframeworks.springboot.transaction;
 
 import com.consdata.kafka.microframeworks.springboot.order.Order;
 import com.consdata.kafka.microframeworks.springboot.wallet.CustomerWallet;
-import com.consdata.kafka.microframeworks.springboot.wallet.Stock;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.kafka.streams.*;
 import org.apache.kafka.streams.kstream.KStream;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
@@ -20,6 +18,9 @@ import java.util.Properties;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
+import static com.consdata.kafka.microframeworks.springboot.order.OrderProducer.BUY_ORDER_TOPIC;
+import static com.consdata.kafka.microframeworks.springboot.order.OrderProducer.SELL_ORDER_TOPIC;
+import static com.consdata.kafka.microframeworks.springboot.transaction.TransactionStream.TRANSACTIONS_TOPIC;
 import static com.consdata.kafka.microframeworks.springboot.wallet.Stock.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -94,17 +95,17 @@ public class TransactionStreamTest {
 
     private void createTopology(Properties streamsConfiguration) {
         StreamsBuilder streamsBuilder = new StreamsBuilder();
-        KStream<String, Order> sellOrderStream = streamsBuilder.stream("spring-boot-sell-orders-test");
-        KStream<String, Order> buyOrderStream = streamsBuilder.stream("spring-boot-buy-orders-test");
+        KStream<String, Order> sellOrderStream = streamsBuilder.stream(SELL_ORDER_TOPIC);
+        KStream<String, Order> buyOrderStream = streamsBuilder.stream(BUY_ORDER_TOPIC);
 
         BiConsumer<KStream<String, Order>, KStream<String, Order>> subject = new TransactionStream(customerWallet).merge();
         subject.accept(sellOrderStream, buyOrderStream);
 
         TopologyTestDriver topologyTestDriver = new TopologyTestDriver(streamsBuilder.build(), streamsConfiguration);
 
-        sellOrderTopic = topologyTestDriver.createInputTopic("spring-boot-sell-orders-test", new StringSerializer(), new JsonSerde<>(Order.class).serializer());
-        buyOrderTopic = topologyTestDriver.createInputTopic("spring-boot-buy-orders-test", new StringSerializer(), new JsonSerde<>(Order.class).serializer());
-        transactionTopic = topologyTestDriver.createOutputTopic("spring-boot-transactions", new StringDeserializer(), new JsonSerde<>(Transaction.class).deserializer());
+        sellOrderTopic = topologyTestDriver.createInputTopic(SELL_ORDER_TOPIC, new StringSerializer(), new JsonSerde<>(Order.class).serializer());
+        buyOrderTopic = topologyTestDriver.createInputTopic(BUY_ORDER_TOPIC, new StringSerializer(), new JsonSerde<>(Order.class).serializer());
+        transactionTopic = topologyTestDriver.createOutputTopic(TRANSACTIONS_TOPIC, new StringDeserializer(), new JsonSerde<>(Transaction.class).deserializer());
     }
 
     private Properties createStreamsConfig() {

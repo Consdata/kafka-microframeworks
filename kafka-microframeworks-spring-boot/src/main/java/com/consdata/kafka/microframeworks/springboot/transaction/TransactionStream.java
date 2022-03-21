@@ -18,6 +18,8 @@ public class TransactionStream {
 
     private final CustomerWallet customerWallet;
 
+    public static final String TRANSACTIONS_TOPIC = "spring-boot-transactions";
+
     public TransactionStream(CustomerWallet customerWallet) {
         this.customerWallet = customerWallet;
     }
@@ -27,11 +29,10 @@ public class TransactionStream {
         return (sellOrderStream, buyOrderStream) -> sellOrderStream
                 .join(buyOrderStream,
                         this::process,
-                        JoinWindows.of(Duration.ofSeconds(1)),
+                        JoinWindows.of(Duration.ofMillis(100)),
                         StreamJoined.with(Serdes.String(), new JsonSerde<>(Order.class), new JsonSerde<>(Order.class)))
-                .filter((key, transaction) -> transaction != null)
                 .filter((key, transaction) -> transaction.getExecutionTimestamp() != null)
-                .to("spring-boot-transactions", Produced.with(Serdes.String(), new JsonSerde<>(Transaction.class)));
+                .to(TRANSACTIONS_TOPIC, Produced.with(Serdes.String(), new JsonSerde<>(Transaction.class)));
     }
 
     private Transaction process(Order sellOrder, Order buyOrder) {
@@ -41,19 +42,19 @@ public class TransactionStream {
         int sellerId = sellOrder.getCustomerId();
         int buyerId = buyOrder.getCustomerId();
 
+        Transaction transaction = Transaction
+                .builder()
+                .sellingCustomerId(sellerId)
+                .buyingCustomerId(buyerId)
+                .stockSymbol(sellOrder.getStockSymbol())
+                .amount(sellOrder.getAmount())
+                .price(sellPrice)
+                .build();
+
         if (buyPrice >= sellPrice && sellerId != buyerId) {
-            int stockTradeAmount = sellOrder.getAmount();
-            Transaction transaction = Transaction
-                    .builder()
-                    .sellingCustomerId(sellerId)
-                    .buyingCustomerId(buyerId)
-                    .stockSymbol(sellOrder.getStockSymbol())
-                    .amount(stockTradeAmount)
-                    .price(sellPrice)
-                    .build();
             return customerWallet.execute(transaction);
         }
 
-        return null;
+        return transaction;
     }
 }
