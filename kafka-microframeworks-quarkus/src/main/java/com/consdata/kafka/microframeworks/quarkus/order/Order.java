@@ -2,6 +2,7 @@ package com.consdata.kafka.microframeworks.quarkus.order;
 
 import com.consdata.kafka.microframeworks.quarkus.wallet.Stock;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.security.SecureRandom;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@RegisterForReflection
 public class Order {
 
     private int customerId;
