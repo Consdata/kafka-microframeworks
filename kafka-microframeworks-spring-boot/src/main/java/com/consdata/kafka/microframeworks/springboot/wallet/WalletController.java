@@ -10,15 +10,15 @@ import java.util.Map;
 @RequestMapping("/wallet")
 public class WalletController {
 
-    private CustomerWallet customerWallet;
+    private StockWallet stockWallet;
 
-    public WalletController(CustomerWallet customerWallet) {
-        this.customerWallet = customerWallet;
+    public WalletController(StockWallet stockWallet) {
+        this.stockWallet = stockWallet;
     }
 
     @GetMapping("/")
     public Map<Integer, Wallet> get() {
-        return customerWallet.getCustomerWalletMap();
+        return stockWallet.getCustomerWalletMap();
     }
 
 }

@@ -1,7 +1,7 @@
 package com.consdata.kafka.microframeworks.micronaut.transaction;
 
 import com.consdata.kafka.microframeworks.micronaut.order.Order;
-import com.consdata.kafka.microframeworks.micronaut.wallet.CustomerWallet;
+import com.consdata.kafka.microframeworks.micronaut.wallet.StockWallet;
 import io.micronaut.configuration.kafka.serde.JsonObjectSerde;
 import io.micronaut.configuration.kafka.streams.ConfiguredStreamBuilder;
 import io.micronaut.context.annotation.Factory;
@@ -21,10 +21,10 @@ import static com.consdata.kafka.microframeworks.micronaut.transaction.Transacti
 @Factory
 public class TransactionStream {
 
-    private final CustomerWallet customerWallet;
+    private final StockWallet stockWallet;
 
-    public TransactionStream(CustomerWallet customerWallet) {
-        this.customerWallet = customerWallet;
+    public TransactionStream(StockWallet stockWallet) {
+        this.stockWallet = stockWallet;
     }
 
     @Singleton
@@ -42,7 +42,7 @@ public class TransactionStream {
 
         sellOrderStream
                 .join(buyOrderStream,
-                        this::process,
+                        stockWallet::process,
                         JoinWindows.of(Duration.ofMillis(100)),
                         StreamJoined.with(Serdes.String(), orderSerde, orderSerde))
                 .filter((key, transaction) -> transaction.getExecutionTimestamp() != null)
@@ -51,26 +51,4 @@ public class TransactionStream {
         return sellOrderStream;
     }
 
-    private Transaction process(Order sellOrder, Order buyOrder) {
-        int sellPrice = sellOrder.getDesiredPricePerStock() * sellOrder.getAmount();
-        int buyPrice = buyOrder.getDesiredPricePerStock() * buyOrder.getAmount();
-
-        int sellerId = sellOrder.getCustomerId();
-        int buyerId = buyOrder.getCustomerId();
-
-        Transaction transaction = Transaction
-                .builder()
-                .sellingCustomerId(sellerId)
-                .buyingCustomerId(buyerId)
-                .stockSymbol(sellOrder.getStockSymbol())
-                .amount(sellOrder.getAmount())
-                .price(sellPrice)
-                .build();
-
-        if (buyPrice >= sellPrice && sellerId != buyerId) {
-            return customerWallet.execute(transaction);
-        }
-
-        return transaction;
-    }
 }

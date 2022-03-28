@@ -1,8 +1,9 @@
-package com.consdata.kafka.microframeworks.springboot.wallet;
+package com.consdata.kafka.microframeworks.micronaut.wallet;
 
-import com.consdata.kafka.microframeworks.springboot.transaction.Transaction;
+import com.consdata.kafka.microframeworks.micronaut.order.Order;
+import com.consdata.kafka.microframeworks.micronaut.transaction.Transaction;
+import jakarta.inject.Singleton;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.Date;
@@ -13,8 +14,8 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 @Slf4j
-@Service
-public class CustomerWallet {
+@Singleton
+public class StockWallet {
 
     private final ConcurrentMap<Integer, Wallet> customerWalletMap = new ConcurrentHashMap<>();
 
@@ -25,6 +26,29 @@ public class CustomerWallet {
 
     public void initTestWallet() {
         IntStream.range(0, 100).forEach(i -> customerWalletMap.put(i, Wallet.generateTestWallet()));
+    }
+
+    public Transaction process(Order sellOrder, Order buyOrder) {
+        int sellPrice = sellOrder.getDesiredPricePerStock() * sellOrder.getAmount();
+        int buyPrice = buyOrder.getDesiredPricePerStock() * buyOrder.getAmount();
+
+        int sellerId = sellOrder.getCustomerId();
+        int buyerId = buyOrder.getCustomerId();
+
+        Transaction transaction = Transaction
+                .builder()
+                .sellingCustomerId(sellerId)
+                .buyingCustomerId(buyerId)
+                .stockSymbol(sellOrder.getStockSymbol())
+                .amount(sellOrder.getAmount())
+                .price(sellPrice)
+                .build();
+
+        if (buyPrice >= sellPrice && sellerId != buyerId) {
+            return execute(transaction);
+        }
+
+        return transaction;
     }
 
     public Transaction execute(Transaction transaction) {

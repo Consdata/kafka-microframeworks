@@ -1,7 +1,7 @@
 package com.consdata.kafka.microframeworks.springboot.transaction;
 
 import com.consdata.kafka.microframeworks.springboot.order.Order;
-import com.consdata.kafka.microframeworks.springboot.wallet.CustomerWallet;
+import com.consdata.kafka.microframeworks.springboot.wallet.StockWallet;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -32,7 +32,7 @@ public class TransactionStreamTest {
 
     private TestOutputTopic<String, Transaction> transactionTopic;
 
-    private CustomerWallet customerWallet;
+    private StockWallet stockWallet;
 
     private static final int SELLING_CUSTOMER_ID = 1;
 
@@ -41,8 +41,8 @@ public class TransactionStreamTest {
     @BeforeEach
     public void setUp() {
         Properties streamsConfiguration = createStreamsConfig();
-        customerWallet = new CustomerWallet();
-        customerWallet.initTestWallet();
+        stockWallet = new StockWallet();
+        stockWallet.initTestWallet();
         createTopology(streamsConfiguration);
     }
 
@@ -89,8 +89,8 @@ public class TransactionStreamTest {
             assertThat(transaction.getPrice()).isEqualTo(100);
         });
 
-        assertThat(customerWallet.getCustomerWalletMap().get(SELLING_CUSTOMER_ID).getBalance().get()).isEqualTo(1_000_300);
-        assertThat(customerWallet.getCustomerWalletMap().get(BUYING_CUSTOMER_ID).getBalance().get()).isEqualTo(999_700);
+        assertThat(stockWallet.getCustomerWalletMap().get(SELLING_CUSTOMER_ID).getBalance().get()).isEqualTo(1_000_300);
+        assertThat(stockWallet.getCustomerWalletMap().get(BUYING_CUSTOMER_ID).getBalance().get()).isEqualTo(999_700);
     }
 
     private void createTopology(Properties streamsConfiguration) {
@@ -98,7 +98,7 @@ public class TransactionStreamTest {
         KStream<String, Order> sellOrderStream = streamsBuilder.stream(SELL_ORDER_TOPIC);
         KStream<String, Order> buyOrderStream = streamsBuilder.stream(BUY_ORDER_TOPIC);
 
-        BiConsumer<KStream<String, Order>, KStream<String, Order>> subject = new TransactionStream(customerWallet).merge();
+        BiConsumer<KStream<String, Order>, KStream<String, Order>> subject = new TransactionStream(stockWallet).merge();
         subject.accept(sellOrderStream, buyOrderStream);
 
         TopologyTestDriver topologyTestDriver = new TopologyTestDriver(streamsBuilder.build(), streamsConfiguration);
