@@ -5,31 +5,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Serializer;
 
-import java.util.Map;
-
 public class JsonSerializer<T> implements Serializer<T> {
 
-    private final ObjectMapper objectMapper;
-
-    public JsonSerializer() {
-        this.objectMapper = new ObjectMapper();
-    }
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public void configure(Map<String, ?> configs, boolean isKey) {
-    }
-
-    @Override
-    public byte[] serialize(String topic, T data) {
+    public byte[] serialize(String s, T object) {
         try {
-            return this.objectMapper.writeValueAsBytes(data);
+            return objectMapper.writeValueAsBytes(object);
         } catch (JsonProcessingException e) {
             throw new SerializationException(e);
         }
-    }
-
-    @Override
-    public void close() {
-
     }
 }

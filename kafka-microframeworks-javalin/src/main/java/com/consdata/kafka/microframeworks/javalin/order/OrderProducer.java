@@ -10,9 +10,9 @@ import java.util.Properties;
 
 public class OrderProducer {
 
-    private final static String BUY_ORDER_TOPIC = "javalin-buy-orders";
+    public final static String BUY_ORDER_TOPIC = "javalin-buy-orders";
 
-    private final static String SELL_ORDER_TOPIC = "javalin-sell-orders";
+    public final static String SELL_ORDER_TOPIC = "javalin-sell-orders";
 
     private final static String BOOTSTRAP_SERVERS = "localhost:9092";
 
