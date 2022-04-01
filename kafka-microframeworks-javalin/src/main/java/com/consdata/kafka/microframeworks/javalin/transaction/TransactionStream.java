@@ -5,27 +5,24 @@ import com.consdata.kafka.microframeworks.javalin.order.JsonSerializer;
 import com.consdata.kafka.microframeworks.javalin.order.Order;
 import com.consdata.kafka.microframeworks.javalin.wallet.StockWallet;
 import org.apache.kafka.common.serialization.Serde;
-import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.Topology;
 import org.apache.kafka.streams.kstream.*;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 import java.util.Properties;
 
 import static com.consdata.kafka.microframeworks.javalin.order.OrderProducer.BUY_ORDER_TOPIC;
 import static com.consdata.kafka.microframeworks.javalin.order.OrderProducer.SELL_ORDER_TOPIC;
+import static com.consdata.kafka.microframeworks.javalin.transaction.TransactionConsumer.TRANSACTIONS_TOPIC;
 import static org.apache.kafka.common.serialization.Serdes.String;
 import static org.apache.kafka.common.serialization.Serdes.serdeFrom;
 
 public class TransactionStream {
 
     private final StockWallet stockWallet;
-
-    public static final String TRANSACTIONS_TOPIC = "javalin-transactions";
 
     public TransactionStream(StockWallet stockWallet) {
         this.stockWallet = stockWallet;

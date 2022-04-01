@@ -9,7 +9,7 @@ services:
     ports:
       - "9092:9092"
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: 192.168.1.64
+      KAFKA_ADVERTISED_HOST_NAME: 172.19.132.145
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_CREATE_TOPICS: "spring-boot-sell-orders:4:1,spring-boot-buy-orders:4:1,spring-boot-transactions:4:1,micronaut-sell-orders:4:1,micronaut-buy-orders:4:1,micronaut-transactions:4:1,quarkus-sell-orders:4:1,quarkus-buy-orders:4:1,quarkus-transactions:4:1,javalin-sell-orders:4:1,javalin-buy-orders:4:1,javalin-transactions:4:1"
     volumes:

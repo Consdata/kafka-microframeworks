@@ -5,6 +5,8 @@ import org.apache.kafka.common.errors.SerializationException;
 import org.apache.kafka.common.serialization.Deserializer;
 
 import java.io.IOException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 public class JsonDeserializer<T> implements Deserializer<T> {
 
@@ -13,7 +15,6 @@ public class JsonDeserializer<T> implements Deserializer<T> {
     private final Class<T> clazz;
 
     public JsonDeserializer(Class<T> clazz) {
-
         this.clazz = clazz;
     }
 

@@ -10,16 +10,16 @@ import java.util.Properties;
 
 public class OrderProducer {
 
-    public final static String BUY_ORDER_TOPIC = "javalin-buy-orders";
+    public static final String BUY_ORDER_TOPIC = "javalin-buy-orders";
 
-    public final static String SELL_ORDER_TOPIC = "javalin-sell-orders";
+    public static final String SELL_ORDER_TOPIC = "javalin-sell-orders";
 
-    private final static String BOOTSTRAP_SERVERS = "localhost:9092";
+    private static final String BOOTSTRAP_SERVERS = "localhost:9092";
 
-    private final Producer<String, Order> orderProducer;
+    private final Producer<String, Order> producer;
 
     public OrderProducer() {
-        orderProducer = createProducer();
+        producer = createProducer();
     }
 
     private static Producer<String, Order> createProducer() {
@@ -32,12 +32,12 @@ public class OrderProducer {
     }
 
     public void produceSell(String key, Order order) {
-        ProducerRecord<String, Order> record = new ProducerRecord<>(SELL_ORDER_TOPIC, key, order);
-        orderProducer.send(record);
+        ProducerRecord<String, Order> orderRecord = new ProducerRecord<>(SELL_ORDER_TOPIC, key, order);
+        producer.send(orderRecord);
     }
 
     public void produceBuy(String key, Order order) {
-        ProducerRecord<String, Order> record = new ProducerRecord<>(BUY_ORDER_TOPIC, key, order);
-        orderProducer.send(record);
+        ProducerRecord<String, Order> orderRecord = new ProducerRecord<>(BUY_ORDER_TOPIC, key, order);
+        producer.send(orderRecord);
     }
 }
