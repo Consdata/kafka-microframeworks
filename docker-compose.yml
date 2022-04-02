@@ -14,19 +14,16 @@ services:
       KAFKA_CREATE_TOPICS: "spring-boot-sell-orders:4:1,spring-boot-buy-orders:4:1,spring-boot-transactions:4:1,micronaut-sell-orders:4:1,micronaut-buy-orders:4:1,micronaut-transactions:4:1,quarkus-sell-orders:4:1,quarkus-buy-orders:4:1,quarkus-transactions:4:1,javalin-sell-orders:4:1,javalin-buy-orders:4:1,javalin-transactions:4:1"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - "zookeeper"
   kouncil:
     image: consdata/kouncil
     ports:
       - "8080:8080"
     environment:
       bootstrapServers: "kafka:9092"
-  micronaut:
-    build:
-      context: ./kafka-microframeworks-micronaut
-    image: consdata/kafka-microframeworks-micronaut
-    container_name: micronaut
-    ports:
-      - "8082:8082"
+    depends_on:
+      - "kafka"
   springboot:
     build:
       context: ./kafka-microframeworks-spring-boot
@@ -34,6 +31,27 @@ services:
     container_name: spring-boot
     ports:
       - "8081:8081"
+    depends_on:
+      - "kafka"
+  micronaut-jar:
+    build:
+      context: ./kafka-microframeworks-micronaut
+      dockerfile: Dockerfile-jar
+    image: consdata/kafka-microframeworks-micronaut
+    container_name: micronaut-jar
+    ports:
+      - "8082:8082"
+    depends_on:
+      - "kafka"
+  javalin:
+    build:
+      context: ./kafka-microframeworks-javalin
+    image: consdata/kafka-microframeworks-javalin
+    container_name: javalin
+    ports:
+      - "8084:8084"
+    depends_on:
+      - "kafka"
   netdata:
     image: netdata/netdata
     ports:

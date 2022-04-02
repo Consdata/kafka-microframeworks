@@ -14,7 +14,7 @@ public class OrderProducer {
 
     public static final String SELL_ORDER_TOPIC = "javalin-sell-orders";
 
-    private static final String BOOTSTRAP_SERVERS = "localhost:9092";
+    private static final String BOOTSTRAP_SERVERS = "kafka:9092";
 
     private final Producer<String, Order> producer;
 

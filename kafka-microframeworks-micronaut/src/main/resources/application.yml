@@ -9,4 +9,4 @@ netty:
       max-order: 3
 kafka:
   bootstrap:
-    servers: localhost:9092
+    servers: kafka:9092
