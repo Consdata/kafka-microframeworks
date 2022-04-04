@@ -33,16 +33,37 @@ services:
       - "8081:8081"
     depends_on:
       - "kafka"
-  micronaut-jar:
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+  micronaut:
     build:
       context: ./kafka-microframeworks-micronaut
-      dockerfile: Dockerfile-jar
     image: consdata/kafka-microframeworks-micronaut
-    container_name: micronaut-jar
+    container_name: micronaut
     ports:
       - "8082:8082"
     depends_on:
       - "kafka"
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+  quarkus:
+    build:
+      context: ./kafka-microframeworks-quarkus
+      dockerfile: Dockerfile.jvm
+    image: consdata/kafka-microframeworks-quarkus
+    container_name: quarkus
+    ports:
+      - "8083:8080"
+    depends_on:
+      - "kafka"
+    deploy:
+      resources:
+        limits:
+          memory: 2G
   javalin:
     build:
       context: ./kafka-microframeworks-javalin
@@ -52,6 +73,10 @@ services:
       - "8084:8084"
     depends_on:
       - "kafka"
+    deploy:
+      resources:
+        limits:
+          memory: 2G
   netdata:
     image: netdata/netdata
     ports:
