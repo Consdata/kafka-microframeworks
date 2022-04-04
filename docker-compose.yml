@@ -60,8 +60,8 @@ services:
   quarkus:
     build:
       context: ./kafka-microframeworks-quarkus
-      dockerfile: Dockerfile.jvm
-    image: consdata/kafka-microframeworks-quarkus
+      dockerfile: Dockerfile.native
+    image: consdata/kafka-microframeworks-quarkus-native
     container_name: quarkus
     ports:
       - "8083:8080"

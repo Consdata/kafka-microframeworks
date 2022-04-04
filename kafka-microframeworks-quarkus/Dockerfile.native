@@ -1,6 +1,21 @@
-FROM maven:3.8.4-openjdk-17 as builder
+FROM ghcr.io/graalvm/graalvm-ce as builder
 WORKDIR /app
 COPY pom.xml .
+COPY mvnw .
+COPY .mvn/ ./.mvn
 COPY src ./src
-RUN mvn package
+RUN gu install native-image
 
+RUN ./mvnw package -Pnative
+
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.5
+WORKDIR /work/
+RUN chown 1001 /work \
+    && chmod "g+rwX" /work \
+    && chown 1001:root /work
+COPY --from=builder --chown=1001:root /app/target/*-runner /work/application
+
+EXPOSE 8080
+USER 1001
+
+CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
