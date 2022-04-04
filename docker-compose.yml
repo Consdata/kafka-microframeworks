@@ -1,4 +1,4 @@
-version: '3'
+version: '3.9'
 services:
   zookeeper:
     image: wurstmeister/zookeeper
@@ -16,6 +16,11 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - "zookeeper"
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --list --zookeeper zookeeper:2181 | grep transactions" ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
   kouncil:
     image: consdata/kouncil
     ports:
@@ -32,7 +37,8 @@ services:
     ports:
       - "8081:8081"
     depends_on:
-      - "kafka"
+      kafka:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -45,7 +51,8 @@ services:
     ports:
       - "8082:8082"
     depends_on:
-      - "kafka"
+      kafka:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -59,7 +66,8 @@ services:
     ports:
       - "8083:8080"
     depends_on:
-      - "kafka"
+      kafka:
+        condition: service_healthy
     deploy:
       resources:
         limits:
@@ -72,7 +80,8 @@ services:
     ports:
       - "8084:8084"
     depends_on:
-      - "kafka"
+      kafka:
+        condition: service_healthy
     deploy:
       resources:
         limits:
