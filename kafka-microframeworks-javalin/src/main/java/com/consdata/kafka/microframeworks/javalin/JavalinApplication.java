@@ -10,6 +10,8 @@ import io.javalin.Javalin;
 
 public class JavalinApplication {
 
+    private static final String KAFKA_BOOTSTRAP_SERVER = "kafka:9092";
+
     public static void main(String[] args) {
         OrderController orderController = orderController();
 
@@ -25,7 +27,7 @@ public class JavalinApplication {
     }
 
     private static OrderController orderController() {
-        OrderProducer orderProducer = new OrderProducer();
+        OrderProducer orderProducer = new OrderProducer(KAFKA_BOOTSTRAP_SERVER);
         OrderService orderService = new OrderService(orderProducer);
         return new OrderController(orderService);
     }
@@ -33,10 +35,10 @@ public class JavalinApplication {
     private static TransactionStream transactionStream() {
         StockWallet stockWallet = new StockWallet();
         stockWallet.initWalletWithRandomValues();
-        return new TransactionStream(stockWallet);
+        return new TransactionStream(KAFKA_BOOTSTRAP_SERVER, stockWallet);
     }
 
     private static TransactionConsumer transactionConsumer() {
-        return new TransactionConsumer();
+        return new TransactionConsumer(KAFKA_BOOTSTRAP_SERVER);
     }
 }

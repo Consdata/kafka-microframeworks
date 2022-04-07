@@ -14,18 +14,21 @@ public class OrderProducer {
 
     public static final String SELL_ORDER_TOPIC = "javalin-sell-orders";
 
-    private static final String BOOTSTRAP_SERVERS = "kafka:9092";
+    private static final String JAVALIN_ORDER_PRODUCER_ID = "javalin-order-producer";
 
     private final Producer<String, Order> producer;
 
-    public OrderProducer() {
+    private final String bootstrapServer;
+
+    public OrderProducer(String bootstrapServer) {
+        this.bootstrapServer = bootstrapServer;
         producer = createProducer();
     }
 
-    private static Producer<String, Order> createProducer() {
+    private Producer<String, Order> createProducer() {
         Properties props = new Properties();
-        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
-        props.put(ProducerConfig.CLIENT_ID_CONFIG, "javalin-application");
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+        props.put(ProducerConfig.CLIENT_ID_CONFIG, JAVALIN_ORDER_PRODUCER_ID);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class.getName());
         return new KafkaProducer<>(props);

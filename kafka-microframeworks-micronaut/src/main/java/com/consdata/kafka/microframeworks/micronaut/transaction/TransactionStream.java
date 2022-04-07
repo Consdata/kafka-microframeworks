@@ -28,7 +28,7 @@ public class TransactionStream {
     }
 
     @Singleton
-    @Named("transaction-stream")
+    @Named("micronaut-transaction-stream")
     public KStream<String, Order> joinOrders(ConfiguredStreamBuilder builder) {
         JsonObjectSerde<Order> orderSerde =
                 new JsonObjectSerde<>(new JsonObjectSerializer(new JacksonDatabindMapper()), Order.class);
@@ -43,7 +43,7 @@ public class TransactionStream {
         sellOrderStream
                 .join(buyOrderStream,
                         stockWallet::process,
-                        JoinWindows.of(Duration.ofMillis(100)),
+                        JoinWindows.of(Duration.ofMillis(10)),
                         StreamJoined.with(Serdes.String(), orderSerde, orderSerde))
                 .filter((key, transaction) -> transaction.getExecutionTimestamp() != null)
                 .to(TRANSACTIONS_TOPIC, Produced.with(Serdes.String(), transactionSerde));

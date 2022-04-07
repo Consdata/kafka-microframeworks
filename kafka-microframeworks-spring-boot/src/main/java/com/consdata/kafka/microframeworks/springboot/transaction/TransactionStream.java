@@ -31,7 +31,7 @@ public class TransactionStream {
         return (sellOrderStream, buyOrderStream) -> sellOrderStream
                 .join(buyOrderStream,
                         stockWallet::process,
-                        JoinWindows.of(Duration.ofMillis(100)),
+                        JoinWindows.of(Duration.ofMillis(10)),
                         StreamJoined.with(
                                 String(),
                                 new JsonSerde<>(Order.class),

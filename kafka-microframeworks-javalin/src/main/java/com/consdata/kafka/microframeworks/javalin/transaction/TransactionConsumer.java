@@ -16,11 +16,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Slf4j
 public class TransactionConsumer {
 
+    public static final String TRANSACTIONS_TOPIC = "javalin-transactions";
+
+    private static final String JAVALIN_TRANSACTION_CONSUMER_ID = "javalin-transaction-consumer";
+
     private final AtomicInteger transactionCounter = new AtomicInteger();
+
+    private final String bootstrapServer;
 
     private boolean consume = true;
 
-    public static final String TRANSACTIONS_TOPIC = "javalin-transactions";
+    public TransactionConsumer(String bootstrapServer) {
+        this.bootstrapServer = bootstrapServer;
+    }
 
     public void startConsuming() {
         CompletableFuture.runAsync(this::consumerThread);
@@ -44,8 +52,8 @@ public class TransactionConsumer {
     @NotNull
     private Properties createProperties() {
         Properties props = new Properties();
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, "javalin-transaction-consumer");
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, JAVALIN_TRANSACTION_CONSUMER_ID);
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");

@@ -22,9 +22,14 @@ import static org.apache.kafka.common.serialization.Serdes.serdeFrom;
 
 public class TransactionStream {
 
+    private static final String JAVALIN_TRANSACTION_STREAM_ID = "javalin-transaction-stream";
+
     private final StockWallet stockWallet;
 
-    public TransactionStream(StockWallet stockWallet) {
+    private final String bootstrapServer;
+
+    public TransactionStream(String bootstrapServer, StockWallet stockWallet) {
+        this.bootstrapServer = bootstrapServer;
         this.stockWallet = stockWallet;
     }
 
@@ -44,7 +49,7 @@ public class TransactionStream {
         sellOrderStream
                 .join(buyOrderStream,
                         stockWallet::process,
-                        JoinWindows.ofTimeDifferenceWithNoGrace(Duration.ofMillis(100)),
+                        JoinWindows.ofTimeDifferenceWithNoGrace(Duration.ofMillis(10)),
                         StreamJoined.with(String(), orderSerde, orderSerde))
                 .filter((key, transaction) -> transaction.getExecutionTimestamp() != null)
                 .to(TRANSACTIONS_TOPIC, Produced.with(String(), transactionSerde));
@@ -56,8 +61,8 @@ public class TransactionStream {
 
     private Properties getProperties(Serde<Order> orderSerde) {
         Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "javalin-transaction-stream");
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "kafka:9092");
+        props.put(StreamsConfig.APPLICATION_ID_CONFIG, JAVALIN_TRANSACTION_STREAM_ID);
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, String().getClass());
         props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, orderSerde.getClass());
         return props;

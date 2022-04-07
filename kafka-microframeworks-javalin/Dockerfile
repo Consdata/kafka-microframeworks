@@ -7,4 +7,4 @@ RUN mvn package
 FROM openjdk:17
 COPY --from=builder /app/target/kafka-microframeworks-javalin-*dependencies.jar app.jar
 EXPOSE 8080
-CMD ["java", "-jar", "app.jar"]
+CMD ["java", "-Xmx1024m", "-jar", "app.jar"]

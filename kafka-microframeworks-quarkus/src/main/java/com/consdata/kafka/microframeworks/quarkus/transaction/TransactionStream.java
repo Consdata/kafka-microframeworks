@@ -43,7 +43,7 @@ public class TransactionStream {
         sellOrders
                 .join(buyOrders,
                         stockWallet::process,
-                        JoinWindows.ofTimeDifferenceWithNoGrace(Duration.ofMillis(100)),
+                        JoinWindows.ofTimeDifferenceWithNoGrace(Duration.ofMillis(10)),
                         StreamJoined.with(
                                 String(),
                                 new JsonbSerde<>(Order.class),

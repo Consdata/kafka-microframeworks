@@ -3,6 +3,11 @@ micronaut:
     name: kafka-microframeworks-micronaut
   server:
     port: 8082
+  executors:
+    consumer:
+      type: fixed
+      nThreads: 4
+
 netty:
   default:
     allocator:
