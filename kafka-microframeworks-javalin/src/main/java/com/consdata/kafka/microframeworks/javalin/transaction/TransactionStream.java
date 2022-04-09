@@ -57,6 +57,7 @@ public class TransactionStream {
         final Topology topology = builder.build();
         KafkaStreams transactionStream = new KafkaStreams(topology, props);
         transactionStream.start();
+        Runtime.getRuntime().addShutdownHook(new Thread(transactionStream::close));
     }
 
     private Properties getProperties(Serde<Order> orderSerde) {
