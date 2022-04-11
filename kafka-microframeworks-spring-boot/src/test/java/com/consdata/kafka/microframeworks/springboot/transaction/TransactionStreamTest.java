@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 
 import static com.consdata.kafka.microframeworks.springboot.order.OrderProducer.BUY_ORDER_TOPIC;
 import static com.consdata.kafka.microframeworks.springboot.order.OrderProducer.SELL_ORDER_TOPIC;
-import static com.consdata.kafka.microframeworks.springboot.transaction.TransactionStream.TRANSACTIONS_TOPIC;
+import static com.consdata.kafka.microframeworks.springboot.transaction.TransactionConsumer.TRANSACTIONS_TOPIC;
 import static com.consdata.kafka.microframeworks.springboot.wallet.Stock.*;
 import static org.assertj.core.api.Assertions.assertThat;
 

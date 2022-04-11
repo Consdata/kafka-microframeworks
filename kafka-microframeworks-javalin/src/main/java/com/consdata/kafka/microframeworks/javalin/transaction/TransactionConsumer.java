@@ -41,10 +41,8 @@ public class TransactionConsumer {
             consumer.subscribe(Collections.singletonList(TRANSACTIONS_TOPIC));
             while (consume) {
                 ConsumerRecords<String, String> transactions = consumer.poll(Duration.ofMillis(100));
-                if (!transactions.isEmpty()) {
-                    transactionCounter.addAndGet(transactions.count());
-                    log.info("Consumed {} transactions, {} overall so far", transactions.count(), transactionCounter.get());
-                }
+                transactionCounter.addAndGet(transactions.count());
+                log.info("Consumed {} transactions, {} overall so far", transactions.count(), transactionCounter.get());
             }
         }
     }

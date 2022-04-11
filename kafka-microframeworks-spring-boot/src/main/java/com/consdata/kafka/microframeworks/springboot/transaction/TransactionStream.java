@@ -14,6 +14,7 @@ import org.springframework.kafka.support.serializer.JsonSerde;
 import java.time.Duration;
 import java.util.function.BiConsumer;
 
+import static com.consdata.kafka.microframeworks.springboot.transaction.TransactionConsumer.TRANSACTIONS_TOPIC;
 import static org.apache.kafka.common.serialization.Serdes.String;
 
 @Slf4j
@@ -21,8 +22,6 @@ import static org.apache.kafka.common.serialization.Serdes.String;
 public class TransactionStream {
 
     private final StockWallet stockWallet;
-
-    public static final String TRANSACTIONS_TOPIC = "spring-boot-transactions";
 
     public TransactionStream(StockWallet stockWallet) {
         this.stockWallet = stockWallet;

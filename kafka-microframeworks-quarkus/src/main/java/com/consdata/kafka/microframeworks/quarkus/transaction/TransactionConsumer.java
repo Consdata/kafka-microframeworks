@@ -15,9 +15,7 @@ public class TransactionConsumer {
 
     @Incoming("transactions")
     public void consumeTransactions(List<Transaction> transactions) {
-        if (!transactions.isEmpty()) {
-            transactionCounter.addAndGet(transactions.size());
-            log.info("Consumed {} transactions, {} overall so far", transactions.size(), transactionCounter.get());
-        }
+        transactionCounter.addAndGet(transactions.size());
+        log.info("Consumed {} transactions, {} overall so far", transactions.size(), transactionCounter.get());
     }
 }
