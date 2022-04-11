@@ -1,7 +1,7 @@
 # Apache Kafka in the era of Java Microframeworks
 
 This repository is intended as a showcase of Apache Kafka integration using four different Java frameworks. It can also 
-serve as a guideline for choosing the framework of your next Kafka project.
+serve as a guideline for choosing the framework for your next Kafka project.
 
 The four frameworks being compared are:
 
